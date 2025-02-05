@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+        <changeSet id="1" author="gpronoitis" failOnError="true">
+
+            <sql>
+                DROP TABLE IF EXISTS `user_registry`;
+                CREATE TABLE `user_registry` (
+                                                 `id` bigint NOT NULL AUTO_INCREMENT,
+                                                 `first_name` varchar(255) NOT NULL,
+                                                 `last_name` varchar(255) NOT NULL,
+                                                 PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+                DROP TABLE IF EXISTS `user`;
+                CREATE TABLE `user` (
+                                        `id` bigint NOT NULL AUTO_INCREMENT,
+                                        `username` varchar(255) NOT NULL,
+                                        `password` varchar(60) NOT NULL,
+                                        `entry_date` datetime(6) DEFAULT NULL,
+                                        `last_update_date` datetime(6) DEFAULT NULL,
+                                        `registry_id` bigint DEFAULT NULL,
+                                        PRIMARY KEY (`id`),
+                                        UNIQUE KEY `UKpdtw9h7xpoiu8wmbeh8dn1aqp` (`registry_id`),
+                                        CONSTRAINT `FKmq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`registry_id`) REFERENCES `user_registry` (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </sql>
+        </changeSet>
+</databaseChangeLog>

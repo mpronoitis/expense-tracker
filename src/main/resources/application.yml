@@ -9,9 +9,18 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     open-in-view: true
     database-platform: org.hibernate.dialect.MySQLDialect
+  liquibase:
+    change-log: "classpath:changelog/db.changelog-dev.xml"
+    enabled: true
+
 server:
   port: 8081
   shutdown: graceful
+
+application:
+  jwt:
+    expiration-millis: 604800000   # 7 days in millisecond
+    secret: ${JWT_SECRET_KEY}

@@ -1,10 +1,12 @@
 package com.app.expensetracker.shared.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
     private final String errorCode;
     private final String errorMessage;
@@ -25,7 +27,7 @@ public class ApiResponse<T> {
         private T payload;
 
         public Builder(){
-            this.errorCode = "";
+            this.errorCode = null;
             this.success = true;
         }
 
