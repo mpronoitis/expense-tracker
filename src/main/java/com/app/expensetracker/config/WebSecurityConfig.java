@@ -79,9 +79,9 @@ public class WebSecurityConfig {
 
     private void handleNotFound(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         ApiResponse<Null> unauthorizedResponse =
-                new ApiResponse.Builder<Null>(ErrorType.IM_UNAUTHORIZED.getCode(), false)
-                        .errorMessage(ErrorType.IM_UNAUTHORIZED.getMessage())
+                new ApiResponse.Builder<Null>(ErrorType.IM_GENERIC.getCode(), false)
+                        .errorMessage(ErrorType.IM_GENERIC.getMessage())
                         .build();
-        Utils.changeResponse(response, HttpStatus.UNAUTHORIZED.value(), unauthorizedResponse);
+        Utils.changeResponse(response, HttpStatus.BAD_REQUEST.value(), unauthorizedResponse);
     }
 }

@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Null;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
@@ -73,5 +74,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiResponse<Null> handle(AuthenticationException ex) {
         return new ApiResponse.Builder<Null>(ErrorType.IM_BAD_CREDENTIALS.getCode(), false).errorMessage(ErrorType.IM_BAD_CREDENTIALS.getMessage()).build();
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<Null> handle(HttpMessageNotReadableException ex) {
+        return new ApiResponse.Builder<Null>(ErrorType.IM_GENERIC.getCode(), false).errorMessage(ex.getMessage()).build();
     }
 }

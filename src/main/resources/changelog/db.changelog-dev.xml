@@ -6,4 +6,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
     <include file="init/database_structure.xml" relativeToChangelogFile="true"/>
     <include file="init/user_insert.xml" relativeToChangelogFile="true"/>
+    <include file="init/category_insert.xml" relativeToChangelogFile="true"/>
+    <include file="init/income_insert.xml" relativeToChangelogFile="true"/>
+    <include file="init/expense_insert.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

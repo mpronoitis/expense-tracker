@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
-        <changeSet id="1" author="gpronoitis" failOnError="true">
+        <changeSet id="1" author="gpronoitis" failOnError="true" >
 
             <sql>
                 DROP TABLE IF EXISTS `user_registry`;
@@ -27,6 +27,46 @@
                                         UNIQUE KEY `UKpdtw9h7xpoiu8wmbeh8dn1aqp` (`registry_id`),
                                         CONSTRAINT `FKmq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`registry_id`) REFERENCES `user_registry` (`id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+                DROP TABLE IF EXISTS `category`;
+                CREATE TABLE `category` (
+                                        `id` bigint NOT NULL AUTO_INCREMENT,
+                                        `name` varchar(255) NOT NULL,
+                                        PRIMARY KEY (`id`),
+                                        `created_at` DATETIME(6) DEFAULT NULL,
+                                        `updated_at` DATETIME(6) DEFAULT NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+                DROP TABLE IF EXISTS `income`;
+                CREATE TABLE `income` (
+                                            `id` bigint NOT NULL AUTO_INCREMENT,
+                                            `date` DATE NOT NULL,
+                                            `amount` DECIMAL(15, 2) NOT NULL,
+                                            `source` VARCHAR(255) NOT NULL,
+                                            `payment_method` VARCHAR(255) NOT NULL,
+                                            `user_id` bigint DEFAULT NULL,
+                                            `created_at` DATETIME(6) DEFAULT NULL,
+                                            `updated_at` DATETIME(6) DEFAULT NULL,
+                                            PRIMARY KEY (`id`),
+                                            CONSTRAINT `Ffmq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+                DROP TABLE IF EXISTS `expense`;
+                CREATE TABLE `expense` (
+                                          `id` bigint NOT NULL AUTO_INCREMENT,
+                                          `date` DATE NOT NULL,
+                                          `amount` DECIMAL(15, 2) NOT NULL,
+                                          `description` VARCHAR(255) NOT NULL,
+                                          `payment_method` VARCHAR(255) NOT NULL,
+                                          `created_at` DATETIME(6) DEFAULT NULL,
+                                          `updated_at` DATETIME(6) DEFAULT NULL,
+                                          `user_id` bigint DEFAULT NULL,
+                                          `category_id` bigint DEFAULT NULL,
+                                          PRIMARY KEY (`id`),
+                                          CONSTRAINT `Fumq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+                                          CONSTRAINT `FLmq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
             </sql>
         </changeSet>
 </databaseChangeLog>

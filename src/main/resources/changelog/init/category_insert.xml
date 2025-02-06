@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.30.xsd">
+
+    <changeSet id="category-insert" author="gpronoitis" runOnChange="true">
+        <sql>
+           INSERT INTO category(name) VALUES ('Food &amp; Groceries');
+           INSERT INTO category(name) VALUES ('Transportation');
+           INSERT INTO category(name) VALUES ('Entertainment');
+           INSERT INTO category(name) VALUES ('Utilities');
+           INSERT INTO category(name) VALUES ('Healt &amp; Fitness');
+           INSERT INTO category(name) VALUES ('Insurance');
+           INSERT INTO category(name) VALUES ('Personal Care');
+           INSERT INTO category(name) VALUES ('Travel &amp; Vacations');
+        </sql>
+    </changeSet>
+</databaseChangeLog>
