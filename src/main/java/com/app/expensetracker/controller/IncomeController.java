@@ -6,10 +6,7 @@ import com.app.expensetracker.service.IncomeService;
 import com.app.expensetracker.shared.rest.model.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,9 +26,15 @@ public class IncomeController {
     }
 
     //Get total-income of user
-    @GetMapping("/incomes/total")
-    public ApiResponse<TotalIncomeResponseDTO> getTotalIncome() {
-        return new ApiResponse.Builder<TotalIncomeResponseDTO>().payload(incomeService.getTotalIncome()).build();
+    @GetMapping("/incomes/{userId}/total")
+    public ApiResponse<TotalIncomeResponseDTO> getTotalIncome(@PathVariable("userId") Long userId) {
+        return new ApiResponse.Builder<TotalIncomeResponseDTO>().payload(incomeService.getTotalIncome(userId)).build();
+    }
+
+    //Get net income of a user. Net Income = Total Income - Total Expenses
+    @GetMapping("/incomes/{userId}/net-income")
+    public ApiResponse<TotalIncomeResponseDTO> getNetIncome(@PathVariable("userId") Long userId) {
+        return new ApiResponse.Builder<TotalIncomeResponseDTO>().payload(incomeService.getNetIncome(userId)).build();
     }
 
 }

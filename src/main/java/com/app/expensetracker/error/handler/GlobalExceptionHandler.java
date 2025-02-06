@@ -1,6 +1,7 @@
 package com.app.expensetracker.error.handler;
 
 import com.app.expensetracker.error.exception.BadUsernameException;
+import com.app.expensetracker.error.exception.CategoryNotFoundException;
 import com.app.expensetracker.error.exception.NotFoundException;
 import com.app.expensetracker.shared.rest.enumeration.ErrorType;
 import com.app.expensetracker.shared.rest.model.ApiResponse;
@@ -60,6 +61,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<Null> handle(NotFoundException ex) {
         return new ApiResponse.Builder<Null>(ErrorType.IM_USER_NOT_FOUND.getCode(), false).errorMessage(ErrorType.IM_USER_NOT_FOUND.getMessage()).build();
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<Null> handle(CategoryNotFoundException ex) {
+        return new ApiResponse.Builder<Null>(ErrorType.IM_CATEGORY_NOT_FOUND.getCode(), false).errorMessage(ErrorType.IM_CATEGORY_NOT_FOUND.getMessage()).build();
     }
 
     @ExceptionHandler(BadCredentialsException.class)

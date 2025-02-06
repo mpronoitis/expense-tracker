@@ -9,6 +9,7 @@ import com.app.expensetracker.dto.response.IncomeResponseDTO;
 import com.app.expensetracker.dto.response.TotalIncomeResponseDTO;
 import com.app.expensetracker.error.exception.NotFoundException;
 import com.app.expensetracker.mapper.IncomeMapper;
+import com.app.expensetracker.repository.ExpenseRepository;
 import com.app.expensetracker.repository.IncomeRepository;
 import com.app.expensetracker.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -29,6 +30,7 @@ public class IncomeService {
     private final IncomeRepository incomeRepository;
     private final IncomeMapper incomeMapper;
     private final UserRepository userRepository;
+    private final ExpenseRepository expenseRepository;
 
     public List<IncomeResponseDTO> getIncomes() {
 
@@ -59,28 +61,28 @@ public class IncomeService {
         return incomeMapper.toDto(savedIncome);
     }
 
-    public TotalIncomeResponseDTO getTotalIncome() {
+    public TotalIncomeResponseDTO getTotalIncome(Long userId) {
 
-        UserClaimsDTO userClaimsDTO = UserClaimsService.getUserClaimsDTO();
-        User user = userRepository.findById(userClaimsDTO.getId()).orElseThrow(() -> new NotFoundException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
         Set<Income> incomes =  user.getIncomes();
         BigDecimal totalIncome = BigDecimal.ZERO;
-        Set<Expense> expenses = user.getExpenses();
-        if (expenses.isEmpty()) { // if expenses are empty mean that totalIncome of user are all the incomes together
-            for (Income income: incomes) {
-                totalIncome = totalIncome.add(income.getAmount());
-            }
-        } else {  //we must calculate the total income based on his expenses
-                totalIncome = incomeRepository.getTotalIncomesByUserId(userClaimsDTO.getId());
-            for (Expense expense: expenses) {
-                totalIncome = totalIncome.subtract(expense.getAmount());
-            }
 
+        for (Income income: incomes) {
+            totalIncome = totalIncome.add(income.getAmount());
         }
 
         TotalIncomeResponseDTO totalIncomeResponseDTO = new TotalIncomeResponseDTO();
         totalIncomeResponseDTO.setTotalIncome(totalIncome);
 
         return totalIncomeResponseDTO;
+    }
+
+    public TotalIncomeResponseDTO getNetIncome(Long userId) {
+        //find all Incomes of the user
+        BigDecimal totalIncome = incomeRepository.getTotalIncomesByUserId(userId);
+        BigDecimal totalExpenses = expenseRepository.getTotalAmountExpensesByUserId(userId);
+       TotalIncomeResponseDTO totalIncomeResponseDTO = new TotalIncomeResponseDTO();
+       totalIncomeResponseDTO.setTotalIncome(totalIncome.subtract(totalExpenses));
+       return totalIncomeResponseDTO;
     }
 }

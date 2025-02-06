@@ -2,7 +2,6 @@ package com.app.expensetracker.domain;
 
 import com.app.expensetracker.domain.user.User;
 import com.app.expensetracker.enumeration.PaymentMethod;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
