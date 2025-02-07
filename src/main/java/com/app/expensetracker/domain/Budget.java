@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "budget", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","category_id"})) // a user can create only one budget per category
+@Table(name = "budget", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","category_id","start_date", "end_date"})) // a user can create only one budget per category
 public class Budget {
 
     @Id
@@ -24,6 +24,7 @@ public class Budget {
     private Long id;
 
     private BigDecimal limitAmount;
+
 
     @Column(name = "start_date")
     private LocalDate startDate;

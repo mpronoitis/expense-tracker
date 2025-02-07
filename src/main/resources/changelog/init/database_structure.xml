@@ -80,7 +80,7 @@
                                            PRIMARY KEY (`id`),
                                            CONSTRAINT `FK_budget_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
                                            CONSTRAINT `FK_budget_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`),
-                                           UNIQUE KEY `UK_budget_user_category` (`user_id`, `category_id`)
+                                           UNIQUE KEY `UK_budget_user_category` (`user_id`, `category_id`, `start_date`, `end_date`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
             </sql>

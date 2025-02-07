@@ -17,9 +17,9 @@ public class BudgetController {
     private final BudgetService budgetService;
 
     //get remaining budget for a category
-    @GetMapping("/budgets/{userId}/remaining")
-    public ApiResponse<BigDecimal> getRemaining(@PathVariable("userId") Long userId, @RequestParam("categoryName") String categoryName) {
-        return new ApiResponse.Builder<BigDecimal>().payload(budgetService.getRemainingBudget(userId, categoryName)).build();
+    @GetMapping("/budget/{userId}/remaining/{budgetId}")
+    public ApiResponse<BigDecimal> getRemaining(@PathVariable("userId") Long userId, @RequestParam("categoryName") String categoryName, @PathVariable("budgetId") Long budgetId) {
+        return new ApiResponse.Builder<BigDecimal>().payload(budgetService.getRemainingBudget(userId, categoryName, budgetId)).build();
     }
 
     //get all budgets for a user

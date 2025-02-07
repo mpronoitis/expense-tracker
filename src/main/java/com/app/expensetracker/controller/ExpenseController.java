@@ -20,8 +20,8 @@ public class ExpenseController {
         return new ApiResponse.Builder<List<ExpenseResponseDTO>>().payload(expenseService.getAll(userId)).build();
     }
 
-    @PostMapping("/expenses")
-    public ApiResponse<ExpenseResponseDTO> createExpense(@Valid @RequestBody ExpenseRequestDTO expenseRequestDTO) {
-        return new ApiResponse.Builder<ExpenseResponseDTO>().payload(expenseService.create(expenseRequestDTO)).build();
+    @PostMapping("/expenses/{userId}/create")
+    public ApiResponse<ExpenseResponseDTO> createExpense(@Valid @RequestBody ExpenseRequestDTO expenseRequestDTO, @PathVariable("userId") Long userId) {
+        return new ApiResponse.Builder<ExpenseResponseDTO>().payload(expenseService.create(userId,expenseRequestDTO)).build();
     }
 }
