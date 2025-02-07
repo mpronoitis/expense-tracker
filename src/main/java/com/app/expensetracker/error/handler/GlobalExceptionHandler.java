@@ -1,8 +1,7 @@
 package com.app.expensetracker.error.handler;
 
 import com.app.expensetracker.error.exception.BadUsernameException;
-import com.app.expensetracker.error.exception.CategoryNotFoundException;
-import com.app.expensetracker.error.exception.NotFoundException;
+import com.app.expensetracker.error.exception.GenericBadRequestException;
 import com.app.expensetracker.shared.rest.enumeration.ErrorType;
 import com.app.expensetracker.shared.rest.model.ApiResponse;
 import jakarta.validation.constraints.Null;
@@ -56,18 +55,11 @@ public class GlobalExceptionHandler {
         return new ApiResponse.Builder<Null>(ErrorType.IM_BAD_USERNAME.getCode(),false).errorMessage(ErrorType.IM_BAD_USERNAME.getMessage()).build();
     }
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(GenericBadRequestException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<Null> handle(NotFoundException ex) {
-        return new ApiResponse.Builder<Null>(ErrorType.IM_USER_NOT_FOUND.getCode(), false).errorMessage(ErrorType.IM_USER_NOT_FOUND.getMessage()).build();
-    }
-
-    @ExceptionHandler(CategoryNotFoundException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<Null> handle(CategoryNotFoundException ex) {
-        return new ApiResponse.Builder<Null>(ErrorType.IM_CATEGORY_NOT_FOUND.getCode(), false).errorMessage(ErrorType.IM_CATEGORY_NOT_FOUND.getMessage()).build();
+    public ApiResponse<Null> handle(GenericBadRequestException ex) {
+        return new ApiResponse.Builder<Null>(ex.getErrorType().getCode(), false).errorMessage(ex.getErrorType().getMessage()).build();
     }
 
     @ExceptionHandler(BadCredentialsException.class)
@@ -88,6 +80,14 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<Null> handle(HttpMessageNotReadableException ex) {
+        return new ApiResponse.Builder<Null>(ErrorType.IM_GENERIC.getCode(), false).errorMessage(ex.getMessage()).build();
+    }
+
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<Null> handle(IllegalArgumentException ex) {
         return new ApiResponse.Builder<Null>(ErrorType.IM_GENERIC.getCode(), false).errorMessage(ex.getMessage()).build();
     }
 }

@@ -60,11 +60,27 @@
                                           `payment_method` VARCHAR(255) NOT NULL,
                                           `created_at` DATETIME(6) DEFAULT NULL,
                                           `updated_at` DATETIME(6) DEFAULT NULL,
-                                          `user_id` bigint DEFAULT NULL,
-                                          `category_id` bigint DEFAULT NULL,
+                                          `user_id` bigint NOT NULL,
+                                          `category_id` bigint NOT NULL,
                                           PRIMARY KEY (`id`),
                                           CONSTRAINT `Fumq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
                                           CONSTRAINT `FLmq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+                DROP TABLE IF EXISTS `budget`;
+                CREATE TABLE `budget` (
+                                           `id` bigint NOT NULL AUTO_INCREMENT,
+                                           `limit_amount` DECIMAL(15, 2) NOT NULL,
+                                           `start_date` DATE NOT NULL,
+                                           `end_date` DATE NOT NULL,
+                                           `created_at` DATETIME(6) DEFAULT NULL,
+                                           `updated_at` DATETIME(6) DEFAULT NULL,
+                                           `user_id` bigint NOT NULL,
+                                           `category_id` bigint NOT NULL,
+                                           PRIMARY KEY (`id`),
+                                           CONSTRAINT `FK_budget_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+                                           CONSTRAINT `FK_budget_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`),
+                                           UNIQUE KEY `UK_budget_user_category` (`user_id`, `category_id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
             </sql>

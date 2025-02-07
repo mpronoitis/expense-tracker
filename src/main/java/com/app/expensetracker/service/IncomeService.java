@@ -1,17 +1,17 @@
 package com.app.expensetracker.service;
 
-import com.app.expensetracker.domain.Expense;
 import com.app.expensetracker.domain.Income;
 import com.app.expensetracker.domain.user.User;
 import com.app.expensetracker.dto.UserClaimsDTO;
 import com.app.expensetracker.dto.request.IncomeRequestDTO;
 import com.app.expensetracker.dto.response.IncomeResponseDTO;
 import com.app.expensetracker.dto.response.TotalIncomeResponseDTO;
-import com.app.expensetracker.error.exception.NotFoundException;
+import com.app.expensetracker.error.exception.GenericBadRequestException;
 import com.app.expensetracker.mapper.IncomeMapper;
 import com.app.expensetracker.repository.ExpenseRepository;
 import com.app.expensetracker.repository.IncomeRepository;
 import com.app.expensetracker.repository.UserRepository;
+import com.app.expensetracker.shared.rest.enumeration.ErrorType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class IncomeService {
     @Transactional(rollbackOn = Exception.class)
     public IncomeResponseDTO create(IncomeRequestDTO incomeRequestDTO) {
         UserClaimsDTO userClaimsDTO = UserClaimsService.getUserClaimsDTO();
-        User user = userRepository.findById(userClaimsDTO.getId()).orElseThrow(() -> new NotFoundException("User not found"));
+        User user = userRepository.findById(userClaimsDTO.getId()).orElseThrow(() -> new GenericBadRequestException("User not found", ErrorType.IM_USER_NOT_FOUND));
 
         //Create Income
         Income income = new Income();
@@ -63,7 +63,7 @@ public class IncomeService {
 
     public TotalIncomeResponseDTO getTotalIncome(Long userId) {
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new GenericBadRequestException("User not found", ErrorType.IM_USER_NOT_FOUND));
         Set<Income> incomes =  user.getIncomes();
         BigDecimal totalIncome = BigDecimal.ZERO;
 

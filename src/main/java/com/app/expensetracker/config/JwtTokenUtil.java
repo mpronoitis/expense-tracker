@@ -2,8 +2,9 @@ package com.app.expensetracker.config;
 
 import com.app.expensetracker.domain.user.User;
 import com.app.expensetracker.dto.UserClaimsDTO;
-import com.app.expensetracker.error.exception.NotFoundException;
+import com.app.expensetracker.error.exception.GenericBadRequestException;
 import com.app.expensetracker.repository.UserRepository;
+import com.app.expensetracker.shared.rest.enumeration.ErrorType;
 import com.app.expensetracker.utils.Utils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,8 +32,6 @@ public class JwtTokenUtil {
     private static final String CLAIMS_USER_CLAIMS_DTO = "userClaims";
     private static final String CLAIMS_IS_AUTHENTICATION = "isAuthentication";
 
-//    @Value("${application.jwt.secret}")
-//    private String jwtSecret;
     private static final Dotenv dotenv = Dotenv.load();
     private static final String SECRET_KEY = dotenv.get("JWT_SECRET_KEY");
 
@@ -68,7 +67,7 @@ public class JwtTokenUtil {
     public boolean validate(String token) {
         try {
             UserClaimsDTO userClaimsDTO = getUserClaimsDTO(token);
-            User user = userRepository.findByUsername(userClaimsDTO.getUsername()).orElseThrow(() -> new NotFoundException("User not found"));
+            User user = userRepository.findByUsername(userClaimsDTO.getUsername()).orElseThrow(() -> new GenericBadRequestException("User not found", ErrorType.IM_USER_NOT_FOUND));
             return true;
         } catch (SignatureException ex) {
             log.error("Invalid JWT signature - {}", ex.getMessage());

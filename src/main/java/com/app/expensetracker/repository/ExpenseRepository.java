@@ -15,4 +15,9 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     @Query(value = "select e from Expense e where e.user.id = :userId")
     List<Expense> getAllExpensesByUserId(@Param("userId") Long userId);
+
+    //find Amount Expenses By Category (Total Expenses By Category)
+    @Query(value = "select coalesce(SUM(e.amount), 0) from Expense e where e.user.id = :userId and e.category.name = :categoryName")
+    BigDecimal getExpensesByCategoryAndUser(@Param("userId") Long userId, @Param("categoryName") String categoryName);
+
 }

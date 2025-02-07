@@ -1,6 +1,6 @@
 package com.app.expensetracker.config;
 
-import com.app.expensetracker.error.exception.NotFoundException;
+import com.app.expensetracker.error.exception.GenericBadRequestException;
 import com.app.expensetracker.repository.UserRepository;
 import com.app.expensetracker.service.UserClaimsService;
 import com.app.expensetracker.shared.rest.enumeration.ErrorType;
@@ -72,7 +72,7 @@ public class WebSecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService((username -> userClaimsService.getUserClaimsDTOByUser(userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"))) ));
+        daoAuthenticationProvider.setUserDetailsService((username -> userClaimsService.getUserClaimsDTOByUser(userRepository.findByUsername(username).orElseThrow(() -> new GenericBadRequestException("User not found", ErrorType.IM_USER_NOT_FOUND))) ));
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
