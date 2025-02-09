@@ -22,8 +22,4 @@ public class RegistrationController {
         return new ApiResponse.Builder<RegisteringUserResponseDTO>().payload(registrationService.registerUser(userRequestDTO)).build();
     }
 
-    @GetMapping("/test")
-    public ApiResponse<String> test() {
-        return new ApiResponse.Builder<String>().payload("Test endpoint").build();
-    }
 }

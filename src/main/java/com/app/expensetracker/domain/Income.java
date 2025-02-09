@@ -34,10 +34,6 @@ public class Income {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    //we need to track the totalIncode of the user because a user can have multipe sources of income
-    @Transient
-    private BigDecimal totalIncome;
-
     @ManyToOne
     private User user;
 

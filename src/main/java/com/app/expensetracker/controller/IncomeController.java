@@ -2,7 +2,10 @@ package com.app.expensetracker.controller;
 import com.app.expensetracker.dto.request.IncomeRequestDTO;
 import com.app.expensetracker.dto.response.IncomeResponseDTO;
 import com.app.expensetracker.dto.response.TotalIncomeResponseDTO;
+import com.app.expensetracker.securityAnnotation.IdToCheck;
+import com.app.expensetracker.securityAnnotation.SecurityLayer;
 import com.app.expensetracker.service.IncomeService;
+import com.app.expensetracker.shared.rest.enumeration.SecurityQueryEnum;
 import com.app.expensetracker.shared.rest.model.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +29,16 @@ public class IncomeController {
     }
 
     //Get total-income of user
+    @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
     @GetMapping("/incomes/{userId}/total")
-    public ApiResponse<TotalIncomeResponseDTO> getTotalIncome(@PathVariable("userId") Long userId) {
+    public ApiResponse<TotalIncomeResponseDTO> getTotalIncome(@IdToCheck @PathVariable("userId") Long userId) {
         return new ApiResponse.Builder<TotalIncomeResponseDTO>().payload(incomeService.getTotalIncome(userId)).build();
     }
 
     //Get net income of a user. Net Income = Total Income - Total Expenses
+    @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
     @GetMapping("/incomes/{userId}/net-income")
-    public ApiResponse<TotalIncomeResponseDTO> getNetIncome(@PathVariable("userId") Long userId) {
+    public ApiResponse<TotalIncomeResponseDTO> getNetIncome(@IdToCheck @PathVariable("userId") Long userId) {
         return new ApiResponse.Builder<TotalIncomeResponseDTO>().payload(incomeService.getNetIncome(userId)).build();
     }
 

@@ -1,5 +1,6 @@
 package com.app.expensetracker.error.handler;
 
+import com.app.expensetracker.dto.ErrorDTO;
 import com.app.expensetracker.error.exception.BadUsernameException;
 import com.app.expensetracker.error.exception.GenericBadRequestException;
 import com.app.expensetracker.shared.rest.enumeration.ErrorType;
@@ -18,9 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @ControllerAdvice
 @Component
@@ -32,19 +31,17 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<Null> handle(MethodArgumentNotValidException ex) {
         log.error("MethodArgumentExcpetion");
-
+        List<ErrorDTO> errorDTOS = new ArrayList<>();
         HashMap<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName =  ((FieldError) error).getField();
             String message = error.getDefaultMessage();
             errors.put(fieldName, message);
+            errorDTOS.add(new ErrorDTO(fieldName,message));
         });
         Set<String> allKeys = errors.keySet();
         Optional<String> optFirstKey = allKeys.stream().findFirst();
-//        if (optFirstKey.isPresent() && errors.get(optFirstKey.get()) != null && !errors.get(optFirstKey.get()).isEmpty()) {
-//            return new ApiResponse.Builder<Null>(ErrorType.IM_ARGUMENT.getCode(), false).errorMessage(errors.get(optFirstKey.get())).build();
-//        }
-         return new ApiResponse.Builder<Null>(ErrorType.IM_ARGUMENT.getCode(), false).errorMessage(ErrorType.IM_ARGUMENT.getMessage()).build();
+         return new ApiResponse.Builder<Null>(ErrorType.IM_ARGUMENT.getCode(), false).errorMessage(ErrorType.IM_ARGUMENT.getMessage()).errors(errorDTOS).build();
     }
 
     @ExceptionHandler({BadUsernameException.class})

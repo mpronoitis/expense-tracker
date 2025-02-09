@@ -12,7 +12,8 @@ public enum ErrorType {
     IM_GENERIC("006", "Generic Error"),
     IM_CATEGORY_NOT_FOUND("007", "Category not found"),
     IM_BUDGET_NOT_FOUND("008", "Budget not found"),
-    IM_BUDGET_EXCEEDED("009", "Budget Limit is exceeded");
+    IM_BUDGET_EXCEEDED("009", "Budget Limit is exceeded"),
+    IM_SECURITY_CONTROL_ERROR("010","Security Control Error: You try to get a resource that does not belongs to you");
 
     private final String code;
     private final String message;

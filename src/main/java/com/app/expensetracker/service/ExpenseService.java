@@ -29,7 +29,7 @@ public class ExpenseService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final BudgetRepository budgetRepository;
-    private final BudgetService budgetService;
+
     public List<ExpenseResponseDTO> getAll(Long userId) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new GenericBadRequestException("User not found", ErrorType.IM_USER_NOT_FOUND));
