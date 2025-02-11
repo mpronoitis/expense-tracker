@@ -43,7 +43,7 @@ public class BudgetController {
 
     @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
     @PostMapping("/budgets/{userId}/create")
-    private ApiResponse<BudgetResponseDTO> create(@IdToCheck @PathVariable("userId") Long userId, @Valid @RequestBody BudgetRequestDTO budgetRequestDTO) {
+    public ApiResponse<BudgetResponseDTO> create(@IdToCheck @PathVariable("userId") Long userId, @Valid @RequestBody BudgetRequestDTO budgetRequestDTO) {
         return new ApiResponse.Builder<BudgetResponseDTO>().payload(budgetService.create(userId,budgetRequestDTO)).build();
     }
 }
