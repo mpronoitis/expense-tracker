@@ -9,15 +9,23 @@ import com.app.expensetracker.shared.rest.enumeration.SecurityQueryEnum;
 import com.app.expensetracker.shared.rest.model.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
+@Validated
 public class BudgetController {
     private final BudgetService budgetService;
+
+    @Autowired
+    public BudgetController(@Lazy BudgetService budgetService) {
+        this.budgetService = budgetService;
+    }
 
     //get remaining budget for a category
     @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
