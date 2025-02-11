@@ -23,6 +23,7 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(precision = 15, scale = 2)
     private BigDecimal limitAmount;
 
 

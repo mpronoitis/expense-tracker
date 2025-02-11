@@ -17,6 +17,3 @@ application:
   jwt:
     expiration-millis: 604800000   # 7 days in millisecond
     secret: ${JWT_SECRET_KEY}
-server:
-  port: 8081
-  shutdown: graceful

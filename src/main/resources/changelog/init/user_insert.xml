@@ -8,7 +8,7 @@
     <changeSet id="user-insert" author="gpronoitis" runOnChange="true">
         <sql>
             INSERT INTO user_registry(first_name, last_name) VALUES ('Temp', 'User');
-            INSERT INTO user(username, password, entry_date, last_update_date,registry_id) VALUES ('temp@gmail.com','$2a$10$Ti6XFJrvHYaUSMSfuTzJe.fpSKPtW/oIpPJMpK0TJP9FUT867OaYu', NULL, NULL, 1);
+            INSERT INTO users(username, password, entry_date, last_update_date,registry_id) VALUES ('temp@gmail.com','$2a$10$Ti6XFJrvHYaUSMSfuTzJe.fpSKPtW/oIpPJMpK0TJP9FUT867OaYu', NULL, NULL, 1);
         </sql>
     </changeSet>
 </databaseChangeLog>

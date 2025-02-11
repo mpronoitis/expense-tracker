@@ -2,7 +2,6 @@ package com.app.expensetracker.service;
 
 import com.app.expensetracker.domain.Budget;
 import com.app.expensetracker.domain.Category;
-import com.app.expensetracker.domain.Expense;
 import com.app.expensetracker.domain.user.User;
 import com.app.expensetracker.dto.request.BudgetRequestDTO;
 import com.app.expensetracker.dto.response.BudgetResponseDTO;
@@ -63,9 +62,6 @@ public class BudgetService {
        Budget budget = budgetRepository.findBudgetByCategoryAndUser(userId, categoryName, budgetId).orElseThrow(() -> new GenericBadRequestException("Budget not found", ErrorType.IM_BUDGET_NOT_FOUND));
 
         return budget.getLimitAmount();
-    }
-    public boolean isOverBudget(Budget budget, BigDecimal totalExpensesForCategory) {
-        return totalExpensesForCategory.compareTo(budget.getLimitAmount()) > 0;
     }
 
     public List<BudgetResponseDTO> findAll(Long userId) {

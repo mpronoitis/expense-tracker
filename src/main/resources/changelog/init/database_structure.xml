@@ -15,8 +15,8 @@
                                                  PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-                DROP TABLE IF EXISTS `user`;
-                CREATE TABLE `user` (
+                DROP TABLE IF EXISTS `users`;
+                CREATE TABLE `users` (
                                         `id` bigint NOT NULL AUTO_INCREMENT,
                                         `username` varchar(255) NOT NULL,
                                         `password` varchar(60) NOT NULL,
@@ -48,7 +48,7 @@
                                             `created_at` DATETIME(6) DEFAULT NULL,
                                             `updated_at` DATETIME(6) DEFAULT NULL,
                                             PRIMARY KEY (`id`),
-                                            CONSTRAINT `Ffmq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+                                            CONSTRAINT `Ffmq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
                 DROP TABLE IF EXISTS `expense`;
@@ -63,7 +63,7 @@
                                           `user_id` bigint NOT NULL,
                                           `category_id` bigint NOT NULL,
                                           PRIMARY KEY (`id`),
-                                          CONSTRAINT `Fumq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+                                          CONSTRAINT `Fumq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
                                           CONSTRAINT `FLmq3hfpenwmt1hh9fkuq69sd6h` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -78,7 +78,7 @@
                                            `user_id` bigint NOT NULL,
                                            `category_id` bigint NOT NULL,
                                            PRIMARY KEY (`id`),
-                                           CONSTRAINT `FK_budget_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+                                           CONSTRAINT `FK_budget_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
                                            CONSTRAINT `FK_budget_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`),
                                            UNIQUE KEY `UK_budget_user_category` (`user_id`, `category_id`, `start_date`, `end_date`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
