@@ -4,6 +4,7 @@ import com.app.expensetracker.domain.Budget;
 import com.app.expensetracker.domain.Category;
 import com.app.expensetracker.domain.user.User;
 import com.app.expensetracker.dto.request.BudgetRequestDTO;
+import com.app.expensetracker.dto.request.BudgetupdateRequestDTO;
 import com.app.expensetracker.dto.response.BudgetResponseDTO;
 import com.app.expensetracker.error.exception.GenericBadRequestException;
 import com.app.expensetracker.mapper.BudgetMapper;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -67,5 +69,34 @@ public class BudgetService {
     public List<BudgetResponseDTO> findAll(Long userId) {
 
         return budgetMapper.toDto(budgetRepository.findAllByUser(userId));
+    }
+
+    public BudgetResponseDTO update(Long userId, Long budgetId, BudgetupdateRequestDTO budgetupdateRequestDTO) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new GenericBadRequestException("User not found", ErrorType.IM_USER_NOT_FOUND));
+        Budget budget = budgetRepository.findBudgetByIdAndUser(userId, budgetId).orElseThrow(() -> new GenericBadRequestException("Budget not found", ErrorType.IM_BUDGET_NOT_FOUND));
+
+        //update the budget
+        if (budgetupdateRequestDTO.getLimitAmount() !=null) {
+            budget.setLimitAmount(budgetupdateRequestDTO.getLimitAmount());
+        }
+        //validate startDate and endDate if provided
+        if (budgetupdateRequestDTO.getStartDate() != null && budgetupdateRequestDTO.getEndDate() != null) {
+            budgetupdateRequestDTO.validate();
+            budget.setStartDate(budgetupdateRequestDTO.getStartDate());
+            budget.setEndDate(budgetupdateRequestDTO.getEndDate());
+        }
+
+        Budget savedBudget = budgetRepository.save(budget);
+
+        return budgetMapper.toDto(savedBudget);
+    }
+
+    public String delete(Long userId, Long budgetId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new GenericBadRequestException("User not found",ErrorType.IM_USER_NOT_FOUND));
+        Budget budget = budgetRepository.findBudgetByIdAndUser(userId, budgetId).orElseThrow(() -> new GenericBadRequestException("Budget not found", ErrorType.IM_BUDGET_NOT_FOUND));
+
+        budgetRepository.delete(budget);
+
+        return "Budget Delete successfully";
     }
 }

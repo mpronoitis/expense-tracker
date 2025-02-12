@@ -1,6 +1,6 @@
 package com.app.expensetracker.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -8,16 +8,11 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 
 @Data
-public class BudgetRequestDTO {
-
-    @NotNull(message = "Startdate can not be null")
+public class BudgetupdateRequestDTO {
     private LocalDate startDate;
-    @NotNull(message = "Enddate can not be null")
     private LocalDate endDate;
-    @NotNull(message = "LimitAmount can not be null")
+    @PositiveOrZero //it is optional, but if provided must greater than zero
     private BigDecimal limitAmount;
-    @NotNull(message = "Category can not be null")
-    private String categoryName;
 
     public void validate() {
 
