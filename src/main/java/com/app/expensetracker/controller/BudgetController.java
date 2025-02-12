@@ -1,12 +1,15 @@
 package com.app.expensetracker.controller;
 
+import com.app.expensetracker.domain.Budget;
 import com.app.expensetracker.dto.request.BudgetRequestDTO;
+import com.app.expensetracker.dto.request.BudgetupdateRequestDTO;
 import com.app.expensetracker.dto.response.BudgetResponseDTO;
 import com.app.expensetracker.securityAnnotation.IdToCheck;
 import com.app.expensetracker.securityAnnotation.SecurityLayer;
 import com.app.expensetracker.service.BudgetService;
 import com.app.expensetracker.shared.rest.enumeration.SecurityQueryEnum;
 import com.app.expensetracker.shared.rest.model.ApiResponse;
+import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,4 +49,18 @@ public class BudgetController {
     public ApiResponse<BudgetResponseDTO> create(@IdToCheck @PathVariable("userId") Long userId, @Valid @RequestBody BudgetRequestDTO budgetRequestDTO) {
         return new ApiResponse.Builder<BudgetResponseDTO>().payload(budgetService.create(userId,budgetRequestDTO)).build();
     }
+
+    @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
+    @PutMapping("/budgets/{userId}/update/{budgetId}")
+    public ApiResponse<BudgetResponseDTO> update(@IdToCheck @PathVariable("userId") Long userId, @PathVariable("budgetId") Long budgetId,@Valid @RequestBody BudgetupdateRequestDTO budgetupdateRequestDTO) {
+        return new ApiResponse.Builder<BudgetResponseDTO>().payload(budgetService.update(userId,budgetId,budgetupdateRequestDTO)).build();
+    }
+
+    @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
+    @DeleteMapping("/budget/{userId}/delete/{budgetId}")
+    public ApiResponse<String> delete(@IdToCheck @PathVariable("userId") Long userId, @PathVariable("budgetId") Long budgetId) {
+        return new ApiResponse.Builder<String>().payload(budgetService.delete(userId, budgetId)).build();
+    }
+
+
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.*;
 
 @ControllerAdvice
@@ -85,6 +86,13 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<Null> handle(IllegalArgumentException ex) {
+        return new ApiResponse.Builder<Null>(ErrorType.IM_GENERIC.getCode(), false).errorMessage(ex.getMessage()).build();
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<Null> handle(SQLIntegrityConstraintViolationException ex) {
         return new ApiResponse.Builder<Null>(ErrorType.IM_GENERIC.getCode(), false).errorMessage(ex.getMessage()).build();
     }
 }
