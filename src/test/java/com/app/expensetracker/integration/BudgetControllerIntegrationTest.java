@@ -74,7 +74,9 @@ public class BudgetControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(budgetRequestDTO)).header("Authorization", "Bearer " + jwtToken));
 
-        response.andDo(print());
+        response.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload.limitAmount").value(budgetRequestDTO.getLimitAmount().setScale(1)));
 
     }
 

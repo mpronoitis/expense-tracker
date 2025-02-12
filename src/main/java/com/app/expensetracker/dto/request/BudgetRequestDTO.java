@@ -1,6 +1,5 @@
 package com.app.expensetracker.dto.request;
 
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -12,7 +11,6 @@ import java.time.YearMonth;
 public class BudgetRequestDTO {
 
     @NotNull(message = "Startdate can not be null")
-    @FutureOrPresent
     private LocalDate startDate;
     @NotNull(message = "Enddate can not be null")
     private LocalDate endDate;
