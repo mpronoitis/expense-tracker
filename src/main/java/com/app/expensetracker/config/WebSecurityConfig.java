@@ -21,6 +21,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -37,9 +38,8 @@ import java.io.IOException;
 //@ConditionalOnProperty(name = "application.jwt.enabled", havingValue = "true", matchIfMissing = true)
 public class WebSecurityConfig {
 
-    private final UserRepository userRepository;
-    private final UserClaimsService userClaimsService;
     private final JwtTokenFilter jwtTokenFilter;
+    private final UserClaimsService userClaimsService;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -76,7 +76,8 @@ public class WebSecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService((username -> userClaimsService.getUserClaimsDTOByUser(userRepository.findByUsername(username).orElseThrow(() -> new GenericBadRequestException("User not found", ErrorType.IM_USER_NOT_FOUND))) ));
+      //  daoAuthenticationProvider.setUserDetailsService((username -> userClaimsService.getUserClaimsDTOByUser(userRepository.findByUsername(username).orElseThrow(() -> new GenericBadRequestException("User not found", ErrorType.IM_USER_NOT_FOUND))) ));
+        daoAuthenticationProvider.setUserDetailsService(userClaimsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
