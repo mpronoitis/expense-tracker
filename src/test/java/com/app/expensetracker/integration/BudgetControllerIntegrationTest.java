@@ -3,11 +3,14 @@ package com.app.expensetracker.integration;
 import com.app.expensetracker.domain.Budget;
 import com.app.expensetracker.domain.Category;
 import com.app.expensetracker.domain.user.User;
+import com.app.expensetracker.dto.request.AuthRequestDTO;
 import com.app.expensetracker.dto.request.BudgetRequestDTO;
 import com.app.expensetracker.repository.BudgetRepository;
 import com.app.expensetracker.repository.CategoryRepository;
 import com.app.expensetracker.repository.UserRepository;
 import com.app.expensetracker.service.BudgetService;
+import com.app.expensetracker.shared.rest.enumeration.ErrorType;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -24,6 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -59,6 +65,33 @@ public class BudgetControllerIntegrationTest {
     }
 
     @Test
+    public void givenValidCredentials_whenGeneratingToken_thenReturnValidToken() throws Exception {
+        AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+        authRequestDTO.setUsername("temp@gmail.com");
+        authRequestDTO.setPassword("Temp1234!!");
+
+        ResultActions response = mockMvc.perform(post("/public/auth/authenticate").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(authRequestDTO)));
+
+        response.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload").isNotEmpty());
+    }
+
+    @Test
+    public void givenIValidCredentials_whenGeneratingToken_thenReturnBadRequest() throws Exception {
+        AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+        authRequestDTO.setUsername("temp@gmail.com");
+        authRequestDTO.setPassword("Temp1234!!!"); //set wrong password
+
+        ResultActions response = mockMvc.perform(post("/public/auth/authenticate").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(authRequestDTO)));
+
+        response.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage", is("Bad Credentials for this user")));
+    }
+
+    @Test
+    @WithUserDetails(value = "temp@gmail.com", userDetailsServiceBeanName = "userClaimsService")
     public void givenUserId_AndBudgetRequestDTO_thenReturnBudgetResponseDTO() throws Exception {
 
         // given - precondition or setup
@@ -67,12 +100,11 @@ public class BudgetControllerIntegrationTest {
         budgetRequestDTO.setCategoryName("Transportation");
         budgetRequestDTO.setStartDate(LocalDate.parse("2025-02-11"));
         budgetRequestDTO.setEndDate(LocalDate.parse("2025-02-28"));
-        String jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxLHRlbXBAZ21haWwuY29tIiwiaXNzIjoibG9jYWxob3N0IiwiaWF0IjoxNzM5MjYzMTgwLCJpc0F1dGhlbnRpY2F0aW9uIjp0cnVlLCJ1c2VyQ2xhaW1zIjp7ImlkIjoxLCJ1c2VybmFtZSI6InRlbXBAZ21haWwuY29tIiwicGFzc3dvcmQiOm51bGwsImZpcnN0TmFtZSI6IlRlbXAiLCJsYXN0TmFtZSI6IlVzZXIiLCJhY2NvdW50Tm9uRXhwaXJlZCI6dHJ1ZSwiYWNjb3VudE5vbkxvY2tlZCI6dHJ1ZSwiY3JlZGVudGlhbHNOb25FeHBpcmVkIjp0cnVlLCJlbmFibGVkIjp0cnVlLCJhdXRob3JpdGllcyI6W119LCJleHAiOjE3Mzk4Njc5ODB9.VWakfKWnjIanLOK8ieNOgjYT_5Dxeewspy-7e5Y0ko-9XQJvH68FXG2k4UfgvlrTBCmbAGMG_h0IjJyLAUTleA";
 
         //when - action or behaviour that we are going to test
         ResultActions response = mockMvc.perform((post("/budgets/{userId}/create", 1L))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(budgetRequestDTO)).header("Authorization", "Bearer " + jwtToken));
+                .content(objectMapper.writeValueAsString(budgetRequestDTO)));
 
         response.andDo(print())
                 .andExpect(status().isOk())
@@ -81,10 +113,10 @@ public class BudgetControllerIntegrationTest {
     }
 
     @Test
+    @WithUserDetails(value = "temp@gmail.com", userDetailsServiceBeanName = "userClaimsService")
     public void givenUserId_AndBudgetId_AndCategoryName_whenGettingRemainingBudget_thenReturnRemaingBudget() throws Exception {
 
         // given - precondition or setup
-        String jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxLHRlbXBAZ21haWwuY29tIiwiaXNzIjoibG9jYWxob3N0IiwiaWF0IjoxNzM5MjYzMTgwLCJpc0F1dGhlbnRpY2F0aW9uIjp0cnVlLCJ1c2VyQ2xhaW1zIjp7ImlkIjoxLCJ1c2VybmFtZSI6InRlbXBAZ21haWwuY29tIiwicGFzc3dvcmQiOm51bGwsImZpcnN0TmFtZSI6IlRlbXAiLCJsYXN0TmFtZSI6IlVzZXIiLCJhY2NvdW50Tm9uRXhwaXJlZCI6dHJ1ZSwiYWNjb3VudE5vbkxvY2tlZCI6dHJ1ZSwiY3JlZGVudGlhbHNOb25FeHBpcmVkIjp0cnVlLCJlbmFibGVkIjp0cnVlLCJhdXRob3JpdGllcyI6W119LCJleHAiOjE3Mzk4Njc5ODB9.VWakfKWnjIanLOK8ieNOgjYT_5Dxeewspy-7e5Y0ko-9XQJvH68FXG2k4UfgvlrTBCmbAGMG_h0IjJyLAUTleA";
         Budget budget = new Budget();
         Optional<User> user = userRepository.findById(1L);
         Optional<Category> category = categoryRepository.findCategoryByName("Transportation");
@@ -98,10 +130,38 @@ public class BudgetControllerIntegrationTest {
         //when - action or behaviour that we are going to test
         ResultActions response = mockMvc
                 .perform(get("/budget/{userId}/remaining/{budgetId}", user.get().getId(),budget.getId())
-                        .header("Authorization", "Bearer " +jwtToken).param("categoryName",category.get().getName()));
+                        .param("categoryName",category.get().getName()));
 
-        response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.payload").value(savedBudget.getLimitAmount()));
+        response.andDo(print()).
+                andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload").value(savedBudget.getLimitAmount()));
+    }
 
+    @Test
+    @WithUserDetails(value = "temp@gmail.com", userDetailsServiceBeanName = "userClaimsService")
+    public void givenInvalidUserId_AndBudgetId_AndCategoryName_whenGettingRemainingBudget_thenReturnSecurityControlException() throws Exception {
+
+        // given - precondition or setup
+        Budget budget = new Budget();
+        Optional<User> user = userRepository.findById(1L);
+        Optional<Category> category = categoryRepository.findCategoryByName("Transportation");
+        budget.setUser(user.get());
+        budget.setCategory(category.get());
+        budget.setLimitAmount(new BigDecimal("150.16"));
+        budget.setStartDate(LocalDate.parse("2025-02-12"));
+        budget.setEndDate(LocalDate.parse("2025-02-28"));
+        Budget savedBudget = budgetRepository.save(budget);
+
+        //when - action or behaviour that we are going to test
+        ResultActions response = mockMvc
+                .perform(get("/budget/{userId}/remaining/{budgetId}", 2L,budget.getId())
+                        .param("categoryName",category.get().getName()));
+
+        response.andDo(print()).
+                andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage",is("Security Control Error: You try to get a resource that does not belongs to you")))
+                .andExpect(jsonPath("$.success").value(Boolean.valueOf("false")))
+                .andExpect(jsonPath("$.errorCode",is(ErrorType.IM_SECURITY_CONTROL_ERROR.getCode())));
     }
 
 
