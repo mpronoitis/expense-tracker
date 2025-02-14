@@ -38,7 +38,7 @@ spring:
     password: password
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
 ```
