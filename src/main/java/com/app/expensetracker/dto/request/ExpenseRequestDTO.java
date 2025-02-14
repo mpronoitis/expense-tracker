@@ -1,6 +1,7 @@
 package com.app.expensetracker.dto.request;
 
 import com.app.expensetracker.enumeration.PaymentMethod;
+import com.app.expensetracker.error.exception.GenericBadRequestException;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -19,4 +20,10 @@ public class ExpenseRequestDTO {
     private PaymentMethod paymentMethod;
     @NotNull(message = "Category can not be null")
     private String categoryName;
+
+    public void validate() {
+        if (date.isAfter(LocalDate.now())) {
+            throw new GenericBadRequestException("Expense date can not be in the future");
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.app.expensetracker.controller;
 
 import com.app.expensetracker.dto.request.ExpenseRequestDTO;
+import com.app.expensetracker.dto.request.ExpenseUpdateRequestDTO;
 import com.app.expensetracker.dto.response.ExpenseResponseDTO;
 import com.app.expensetracker.securityAnnotation.IdToCheck;
 import com.app.expensetracker.securityAnnotation.SecurityLayer;
@@ -28,5 +29,11 @@ public class ExpenseController {
     @PostMapping("/expenses/{userId}/create")
     public ApiResponse<ExpenseResponseDTO> createExpense(@Valid @RequestBody ExpenseRequestDTO expenseRequestDTO, @IdToCheck @PathVariable("userId") Long userId) {
         return new ApiResponse.Builder<ExpenseResponseDTO>().payload(expenseService.create(userId,expenseRequestDTO)).build();
+    }
+
+    @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
+    @PutMapping("/expenses/{userId}/update/{expenseId}")
+    public ApiResponse<ExpenseResponseDTO> update(@RequestBody ExpenseUpdateRequestDTO updateRequestDTO,@IdToCheck @PathVariable("userId") Long userId,@PathVariable("expenseId") Long expenseId) {
+        return new ApiResponse.Builder<ExpenseResponseDTO>().payload(expenseService.update(updateRequestDTO, userId, expenseId)).build();
     }
 }
