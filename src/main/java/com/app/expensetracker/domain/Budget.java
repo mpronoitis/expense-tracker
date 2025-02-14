@@ -26,7 +26,6 @@ public class Budget {
     @Column(precision = 15, scale = 2)
     private BigDecimal limitAmount;
 
-
     @Column(name = "start_date")
     private LocalDate startDate;
 

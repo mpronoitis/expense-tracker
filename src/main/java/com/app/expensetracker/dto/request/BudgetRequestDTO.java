@@ -1,11 +1,13 @@
 package com.app.expensetracker.dto.request;
 
+import com.app.expensetracker.error.exception.GenericBadRequestException;
+import com.app.expensetracker.shared.rest.enumeration.ErrorType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
 
 @Data
 public class BudgetRequestDTO {
@@ -21,20 +23,20 @@ public class BudgetRequestDTO {
 
     public void validate() {
 
-        //Ensure that startDate and endDate are in the same month
-        YearMonth startMonth = YearMonth.from(startDate);
-        YearMonth endMonth = YearMonth.from(endDate);
-
-        if (!startMonth.equals(endMonth)) {
-            throw new IllegalArgumentException("Start date and end date must be in the same month");
+        // Start Date can't be in the past
+        if (startDate.isBefore(LocalDate.now())) {
+            throw new GenericBadRequestException("Start date cannot be in the past", ErrorType.IM_INVALID_DATE);
         }
 
-        if (!endDate.equals(endMonth.atEndOfMonth())) {
-            throw new IllegalArgumentException("End date must be the last day of the month");
-        }
-
+        // Start Date can't be after End Date
         if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("Start date must be before the end date");
+            throw new GenericBadRequestException("Start date cannot be after the end date", ErrorType.IM_INVALID_DATE_RANGE);
         }
+
+        // Validate maximum budget duration (e.g., 1 year max)
+        if (startDate.until(endDate, ChronoUnit.DAYS) > 365) {
+            throw new GenericBadRequestException("Budget duration cannot exceed one year", ErrorType.IM_INVALID_DATE_RANGE);
+        }
+
     }
 }
