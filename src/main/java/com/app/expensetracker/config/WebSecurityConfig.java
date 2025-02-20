@@ -1,7 +1,6 @@
 package com.app.expensetracker.config;
 
-import com.app.expensetracker.error.exception.GenericBadRequestException;
-import com.app.expensetracker.repository.UserRepository;
+
 import com.app.expensetracker.service.UserClaimsService;
 import com.app.expensetracker.shared.rest.enumeration.ErrorType;
 import com.app.expensetracker.shared.rest.model.ApiResponse;
@@ -11,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -21,11 +19,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 
@@ -35,21 +33,30 @@ import java.io.IOException;
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 @RequiredArgsConstructor
 @Slf4j
-//@ConditionalOnProperty(name = "application.jwt.enabled", havingValue = "true", matchIfMissing = true)
+
 public class WebSecurityConfig {
 
     private final JwtTokenFilter jwtTokenFilter;
     private final UserClaimsService userClaimsService;
 
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        //define public URLS
+          String[] URLS = {
+                "/public/**",
+                "/v3/api-docs/**",
+                "/swagger-ui/index.html",
+                "/swagger-ui/**"
+        };
         // Enable CORS and disable CSRF
         http.cors().and().csrf().disable();
 
         // Set session management to stateless because we will use jwt-token based authentication
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-    ///handler for unauthorized requests
+        ///handler for unauthorized requests
         http.exceptionHandling().authenticationEntryPoint(this::handleNotFound);
 
         //set the authenticationProvider
@@ -57,7 +64,7 @@ public class WebSecurityConfig {
         // Authorize all request from public/*
         http.authorizeHttpRequests(authorize ->
                 authorize
-                        .requestMatchers("/public/**")
+                        .requestMatchers(URLS)
                         .permitAll()
                         .anyRequest()
                         .authenticated());
@@ -80,6 +87,11 @@ public class WebSecurityConfig {
         daoAuthenticationProvider.setUserDetailsService(userClaimsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
     private void handleNotFound(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {

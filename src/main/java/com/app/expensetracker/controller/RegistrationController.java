@@ -4,6 +4,7 @@ import com.app.expensetracker.dto.request.RegisteringUserRequestDTO;
 import com.app.expensetracker.dto.response.RegisteringUserResponseDTO;
 import com.app.expensetracker.service.RegistrationService;
 import com.app.expensetracker.shared.rest.model.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ public class RegistrationController {
 
     private final RegistrationService registrationService;
 
+    @Operation(summary = "Create a new user fo the application", description = "Return the created User")
     @PostMapping("/public/registration/sign-up")
     public ApiResponse<RegisteringUserResponseDTO> signUp(@RequestBody @Valid RegisteringUserRequestDTO userRequestDTO) {
         return new ApiResponse.Builder<RegisteringUserResponseDTO>().payload(registrationService.registerUser(userRequestDTO)).build();

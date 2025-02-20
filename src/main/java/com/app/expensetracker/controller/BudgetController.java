@@ -9,6 +9,7 @@ import com.app.expensetracker.securityAnnotation.SecurityLayer;
 import com.app.expensetracker.service.BudgetService;
 import com.app.expensetracker.shared.rest.enumeration.SecurityQueryEnum;
 import com.app.expensetracker.shared.rest.model.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class BudgetController {
     }
 
     //get remaining budget for a category
+    @Operation(summary = "Find remaining budget of a category", description = "Return the amount of budget")
     @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
     @GetMapping("/budget/{userId}/remaining/{budgetId}")
     public ApiResponse<BigDecimal> getRemaining(@IdToCheck @PathVariable("userId") Long userId, @RequestParam("categoryName") String categoryName, @PathVariable("budgetId") Long budgetId) {
@@ -38,24 +40,28 @@ public class BudgetController {
     }
 
     //get all budgets for a user
+    @Operation(summary = "Find all budgets of a user", description = "Return a list with the budgets")
     @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
     @GetMapping("/budgets/{userId}")
     public ApiResponse<List<BudgetResponseDTO>> findAll(@IdToCheck @PathVariable("userId") Long userId) {
         return new ApiResponse.Builder<List<BudgetResponseDTO>>().payload(budgetService.findAll(userId)).build();
     }
 
+    @Operation(summary = "Create a new budget for a category", description = "Return the created Budget")
     @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
     @PostMapping("/budgets/{userId}/create")
     public ApiResponse<BudgetResponseDTO> create(@IdToCheck @PathVariable("userId") Long userId, @Valid @RequestBody BudgetRequestDTO budgetRequestDTO) {
         return new ApiResponse.Builder<BudgetResponseDTO>().payload(budgetService.create(userId,budgetRequestDTO)).build();
     }
 
+    @Operation(summary = "Update a Budget", description = "Return the updated Budget")
     @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
     @PutMapping("/budgets/{userId}/update/{budgetId}")
     public ApiResponse<BudgetResponseDTO> update(@IdToCheck @PathVariable("userId") Long userId, @PathVariable("budgetId") Long budgetId,@Valid @RequestBody BudgetupdateRequestDTO budgetupdateRequestDTO) {
         return new ApiResponse.Builder<BudgetResponseDTO>().payload(budgetService.update(userId,budgetId,budgetupdateRequestDTO)).build();
     }
 
+    @Operation(summary = "Delete a budget", description = "Return a message if the operation was successful")
     @SecurityLayer(securityQueryEnum = SecurityQueryEnum.RETRIEVE_USER)
     @DeleteMapping("/budget/{userId}/delete/{budgetId}")
     public ApiResponse<String> delete(@IdToCheck @PathVariable("userId") Long userId, @PathVariable("budgetId") Long budgetId) {
