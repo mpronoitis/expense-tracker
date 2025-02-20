@@ -20,3 +20,12 @@ application:
 server:
   port: 8081
   shutdown: graceful
+
+springdoc:
+  swagger-ui:
+    path: /ui
+  title: Expense Tracker API
+  version: '@springdoc-openapi-starter-webmvc-ui.version@' #read the value from pom.xml
+openapi:
+    output:
+      file: 'openapi-@project.name@.json'
