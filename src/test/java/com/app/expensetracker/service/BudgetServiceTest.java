@@ -106,7 +106,7 @@ public class BudgetServiceTest {
 
         budget = new Budget();
         budget.setId(1L);
-        budget.setStartDate(LocalDate.parse("2025-02-10"));
+        budget.setStartDate(LocalDate.now());
         budget.setEndDate(LocalDate.parse("2025-02-28"));
         budget.setCategory(category);
         budget.setLimitAmount(new BigDecimal("50.00"));
@@ -114,12 +114,12 @@ public class BudgetServiceTest {
 
         budgetRequestDTO = new BudgetRequestDTO();
         budgetRequestDTO.setLimitAmount(new BigDecimal("50.00"));
-        budgetRequestDTO.setStartDate(LocalDate.parse("2025-02-10"));
+        budgetRequestDTO.setStartDate(LocalDate.now());
         budgetRequestDTO.setEndDate(LocalDate.parse("2025-02-28"));
         budgetRequestDTO.setCategoryName("Transportation");
 
         budgetResponseDTO = new BudgetResponseDTO();
-        budgetResponseDTO.setStartDate(LocalDate.parse("2025-02-10"));
+        budgetResponseDTO.setStartDate(LocalDate.now());
         budgetResponseDTO.setEndDate((LocalDate.parse("2025-02-28")));
         budgetResponseDTO.setLimitAmount(new BigDecimal("50.00").subtract(expense.getAmount()));
         budgetResponseDTO.setCategory(categoryDTO);

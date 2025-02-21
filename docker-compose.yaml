@@ -1,0 +1,43 @@
+services:
+  expense_tracker_api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      mysql_service:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    networks:
+      - backend_network
+    environment:
+      MYSQL_HOST: mysql_service
+      MYSQL_DB: expense_tracker
+      MYSQL_PORT: 3306
+      MYSQL_PASSWORD: root
+  mysql_service:
+    container_name: mysql_db
+    image: mysql:8.0.31
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: expense_tracker
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-P", "3306", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 30s
+      retries: 5
+      timeout: 10s
+      start_period: 10s
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend_network
+
+volumes:
+  mysql_data:
+
+networks:
+  backend_network:
+    driver: bridge

@@ -27,13 +27,13 @@ import static java.lang.String.format;
 @Slf4j
 public class JwtTokenUtil {
 
-    private final UserRepository userRepository;
+   // private final UserRepository userRepository;
 
     private static final String CLAIMS_USER_CLAIMS_DTO = "userClaims";
     private static final String CLAIMS_IS_AUTHENTICATION = "isAuthentication";
 
     private static final Dotenv dotenv = Dotenv.load();
-    private static final String SECRET_KEY = dotenv.get("JWT_SECRET_KEY");
+    private static final String SECRET_KEY =  dotenv.get("JWT_SECRET_KEY");
 
     @Value("${application.jwt.expiration-millis}")
     private Integer jwtExpirationMillis;
@@ -67,7 +67,7 @@ public class JwtTokenUtil {
     public boolean validate(String token) {
         try {
             UserClaimsDTO userClaimsDTO = getUserClaimsDTO(token);
-            User user = userRepository.findByUsername(userClaimsDTO.getUsername()).orElseThrow(() -> new GenericBadRequestException("User not found", ErrorType.IM_USER_NOT_FOUND));
+          //  User user = userRepository.findByUsername(userClaimsDTO.getUsername()).orElseThrow(() -> new GenericBadRequestException("User not found", ErrorType.IM_USER_NOT_FOUND));
             return true;
         } catch (SignatureException ex) {
             log.error("Invalid JWT signature - {}", ex.getMessage());

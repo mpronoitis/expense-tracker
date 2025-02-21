@@ -98,7 +98,7 @@ public class BudgetControllerIntegrationTest {
         BudgetRequestDTO budgetRequestDTO = new BudgetRequestDTO();
         budgetRequestDTO.setLimitAmount(new BigDecimal("150.00"));
         budgetRequestDTO.setCategoryName("Transportation");
-        budgetRequestDTO.setStartDate(LocalDate.parse("2025-02-11"));
+        budgetRequestDTO.setStartDate(LocalDate.now());
         budgetRequestDTO.setEndDate(LocalDate.parse("2025-02-28"));
 
         //when - action or behaviour that we are going to test
