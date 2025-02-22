@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class ExpenseTrackerApplication {
 
     public static void main(String[] args) {
+        System.setProperty("testcontainers.docker.client.strategy", "org.testcontainers.dockerclient.UnixSocketClientProviderStrategy");
         SpringApplication.run(ExpenseTrackerApplication.class, args);
     }
 
